@@ -21,11 +21,11 @@ provider:
   # TODO: Change me!
   # TODO: Find a better way to define api keys
   apiKeys:
-    - barry.hanbury-pickett@itineris.co.uk
-    - jack.alexander@itineris.co.uk
-    - lee.hanbury-pickett@itineris.co.uk
-    - rufus.tang@itineris.co.uk
-    - tim@itineris.co.uk
+    - ${opt:stage, 'dev'}-barry.hanbury-pickett@itineris.co.uk
+    - ${opt:stage, 'dev'}-jack.alexander@itineris.co.uk
+    - ${opt:stage, 'dev'}-lee.hanbury-pickett@itineris.co.uk
+    - ${opt:stage, 'dev'}-rufus.tang@itineris.co.uk
+    - ${opt:stage, 'dev'}-tim@itineris.co.uk
   usagePlan:
     quota:
       limit: 200
