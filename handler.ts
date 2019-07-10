@@ -1,35 +1,35 @@
 import {APIGatewayProxyHandler} from 'aws-lambda'
-import {CloudFormation, CloudFront, IAM} from 'aws-sdk'
-import * as url from 'url'
+import {CloudFormation, CloudFront} from 'aws-sdk'
 
 import * as templates from './templates'
 
 export const create: APIGatewayProxyHandler = async event => {
   const prefix = process.env.PREFIX
-  const {domainName} = JSON.parse(event.body)
-  console.info('domainName', domainName)
+  console.info('event', event)
+  const {name} = JSON.parse(event.body)
+  console.info('name', name)
 
-  const {hostname} = url.parse(`https://${prefix}.${domainName}`)
-  console.info('hostname', hostname)
-
-  if (typeof(hostname) !== 'string' || hostname.length < 1) {
+  const nameRegex = RegExp('^[a-z0-9\-]+$')
+  const isNameValid = typeof (name) === 'string' && nameRegex.test(name)
+  if (!isNameValid) {
     return {
       statusCode: 422,
       body: JSON.stringify({
         Status: 'Validation Failed',
+        Message: `'name' must in format ${nameRegex}`,
         Error: {
-          DomainName: domainName,
-          Hostname: hostname,
+          Name: name,
         },
       }),
     }
   }
 
-  const name = `${hostname}`
-  console.info('name', name)
-
-  const stackName = name.replace(/\./g, '-')
+  const stackName = `${prefix}-${name}`
   console.info('stackName', stackName)
+  const productionName = `${prefix}-prod-${name}`
+  console.info('productionName', stackName)
+  const stagingName = `${prefix}-staging-${name}`
+  console.info('stagingName', stackName)
 
   const params = {
     StackName: stackName,
@@ -39,8 +39,12 @@ export const create: APIGatewayProxyHandler = async event => {
     OnFailure: 'DELETE',
     Parameters: [
       {
-        ParameterKey: 'Name',
-        ParameterValue: name
+        ParameterKey: 'ProductionName',
+        ParameterValue: productionName
+      },
+      {
+        ParameterKey: 'StagingName',
+        ParameterValue: stagingName
       }
     ],
     TemplateBody: templates.cloudformation,
@@ -60,7 +64,6 @@ export const create: APIGatewayProxyHandler = async event => {
         body: JSON.stringify({
           Status: 'Accepted',
           StackName: stackName,
-          Hostname: hostname,
           Message: 'The stack has been scheduled for processing. Be patient. It cloud take ~20 minutes.',
           Stack: data
         }),
@@ -74,8 +77,8 @@ export const create: APIGatewayProxyHandler = async event => {
         body: JSON.stringify({
           Status: 'Error',
           StackName: stackName,
-          Hostname: hostname,
-          Error: err.stack
+          Name: name,
+          Error: err.stack,
         }),
       }
     }
@@ -86,27 +89,46 @@ export const show: APIGatewayProxyHandler = async event => {
   try {
     const name: string = event.pathParameters.name
 
-    const CloudfrontDistribution = await getResource(name, 'CloudFrontDistribution')
-    console.info(CloudfrontDistribution)
+    // Production
+    const ProductionCloudfrontDistribution = await getResource(name, 'ProductionCloudFrontDistribution')
+    console.info(ProductionCloudfrontDistribution)
 
     const cloudfront = new CloudFront()
-    const {Distribution} = await cloudfront.getDistribution({
-      Id: CloudfrontDistribution.StackResourceDetail.PhysicalResourceId
+    const {Distribution: ProductionDistribution} = await cloudfront.getDistribution({
+      Id: ProductionCloudfrontDistribution.StackResourceDetail.PhysicalResourceId
     }).promise()
-    console.info(Distribution)
+    console.info(ProductionDistribution)
 
-    const S3Bucket = await getResource(name, 'S3Bucket')
-    console.info(S3Bucket)
+    const ProductionS3Bucket = await getResource(name, 'ProductionS3Bucket')
+    console.info(ProductionS3Bucket)
 
-    const IAMUser = await getResource(name, 'IAMUser')
-    console.info(IAMUser)
+    const ProductionIAMUser = await getResource(name, 'ProductionIAMUser')
+    console.info(ProductionIAMUser)
+
+    // Staging
+    const StagingCloudfrontDistribution = await getResource(name, 'StagingCloudFrontDistribution')
+    console.info(StagingCloudfrontDistribution)
+
+    const {Distribution: StagingDistribution} = await cloudfront.getDistribution({
+      Id: StagingCloudfrontDistribution.StackResourceDetail.PhysicalResourceId
+    }).promise()
+    console.info(StagingDistribution)
+
+    const StagingS3Bucket = await getResource(name, 'StagingS3Bucket')
+    console.info(StagingS3Bucket)
+
+    const StagingIAMUser = await getResource(name, 'StagingIAMUser')
+    console.info(StagingIAMUser)
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        Distribution,
-        S3Bucket,
-        IAMUser
+        ProductionDistribution,
+        ProductionS3Bucket,
+        ProductionIAMUser,
+        StagingDistribution,
+        StagingS3Bucket,
+        StagingIAMUser,
       }),
     }
   } catch (err) {
@@ -129,37 +151,4 @@ const getResource = async (StackName: string, LogicalResourceId: string) => {
     LogicalResourceId,
     StackName,
   }).promise()
-}
-
-export const createAccessKey: APIGatewayProxyHandler = async event => {
-  try {
-    const name: string = event.pathParameters.name
-
-    const IAMUser = await getResource(name, 'IAMUser')
-    console.info(IAMUser)
-
-    const iam = new IAM()
-    const accessKey = await iam.createAccessKey({
-      UserName: IAMUser.StackResourceDetail.PhysicalResourceId
-    }).promise()
-
-    console.info(accessKey.AccessKey.AccessKeyId)
-
-    return {
-      statusCode: 201,
-      body: JSON.stringify({
-        AccessKey: accessKey.AccessKey
-      }),
-    }
-  } catch (err) {
-    console.error('err', err)
-
-    return {
-      statusCode: err.statusCode || 400,
-      body: JSON.stringify({
-        Status: 'Error',
-        Error: err,
-      })
-    }
-  }
 }
