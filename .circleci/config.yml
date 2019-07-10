@@ -1,0 +1,36 @@
+version: 2.1
+
+executors:
+  node-10:
+    docker:
+      - image: 'circleci/node:10-stretch'
+
+jobs:
+  test:
+    executor: node-10
+    steps:
+      - run: yarn versions
+
+      - checkout
+
+      - restore_cache:
+          keys:
+            - node-v1-{{ checksum "yarn.lock" }}
+            - node-v1-
+      - run: yarn install --frozen-lockfile
+      - run: yarn global add serverless
+      - save_cache:
+          key: node-v1-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+            - /users/circleci/.config/yarn/global
+
+      - run: $(yarn global bin)/serverless version
+
+      # As TypeScript syntax check
+      - run: $(yarn global bin)/serverless package
+
+workflows:
+  test:
+    jobs:
+      - test
