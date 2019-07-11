@@ -73,3 +73,11 @@ functions:
           method: get
           path: stacks/{name}
           private: true
+
+  createAccessKey:
+    handler: handler.createAccessKey
+    events:
+      - http:
+          method: post
+          path: stacks/{name}/access-keys/{resource}
+          private: true
