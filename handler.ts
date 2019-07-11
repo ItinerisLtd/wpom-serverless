@@ -1,5 +1,5 @@
 import {APIGatewayProxyHandler} from 'aws-lambda'
-import {CloudFormation, CloudFront} from 'aws-sdk'
+import {CloudFormation, CloudFront, IAM} from 'aws-sdk'
 
 import * as templates from './templates'
 
@@ -151,4 +151,40 @@ const getResource = async (StackName: string, LogicalResourceId: string) => {
     LogicalResourceId,
     StackName,
   }).promise()
+}
+
+export const createAccessKey: APIGatewayProxyHandler = async event => {
+  try {
+    const {name, resource} = event.pathParameters
+    console.info(name)
+    console.info(resource)
+
+    const IAMUser = await getResource(name, resource)
+    console.info(IAMUser)
+
+    const iam = new IAM()
+    const accessKey = await iam.createAccessKey({
+      UserName: IAMUser.StackResourceDetail.PhysicalResourceId
+    }).promise()
+
+    // Don't log secret keys!
+    console.info(accessKey.AccessKey.AccessKeyId)
+
+    return {
+      statusCode: 201,
+      body: JSON.stringify({
+        AccessKey: accessKey.AccessKey
+      }),
+    }
+  } catch (err) {
+    console.error('err', err)
+
+    return {
+      statusCode: err.statusCode || 400,
+      body: JSON.stringify({
+        Status: 'Error',
+        Error: err,
+      })
+    }
+  }
 }
