@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@oclif/tslint": "^3.1.1",
-    "@types/aws-lambda": "8.10.1",
+    "@types/aws-lambda": "8.10.30",
     "@types/node": "^8.0.57",
     "aws-lambda": "^0.1.2",
     "serverless-webpack": "^5.3.1",

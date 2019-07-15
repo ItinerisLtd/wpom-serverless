@@ -29,10 +29,10 @@
     tslint-eslint-rules "^5.4.0"
     tslint-xo "^0.9.0"
 
-"@types/aws-lambda@8.10.1":
-  version "8.10.1"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.1.tgz#424888a9ee89f6b5fc6dc23f31b00a715483dcaf"
-  integrity sha512-a9qWnTgl12AIQVUyZ6A9oHt0gkhPhuHLtpL6zkfUB/06KLWcDFJKT4ldAouIWjoM36t2cEWqI7HY9ty06cNBtQ==
+"@types/aws-lambda@8.10.30":
+  version "8.10.30"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.30.tgz#ac334e908612d993e0c2fc0c04625f4ad05a50cc"
+  integrity sha512-b7qoehANMfwwl7BcVSn/6NN/4fq7w4T5xO2YnJGT84CAuTl0rdAQGvc9/POfcJcjAeTgiUTqiTTFWDBLq7SsvQ==
 
 "@types/node@^8.0.57":
   version "8.10.38"
