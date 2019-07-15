@@ -378,10 +378,10 @@ aws-lambda@^0.1.2:
     commander "^2.5.0"
     dotenv "^0.4.0"
 
-aws-sdk@^*, aws-sdk@^2.369.0:
-  version "2.371.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.371.0.tgz#e069f7478be03d36a4812298f4e87dbcab6d81d7"
-  integrity sha512-SlSKhWEMCm3rC8LwaZ3Z2SaLp7qO0ZxUGsJs1TZp+dlYehDitFGZjfr0rD+ioxlzOniOViUFEACM63eLZjnTnA==
+aws-sdk@^*, aws-sdk@^2.493.0:
+  version "2.493.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.493.0.tgz#2526208efc0fff91529c41c1d9f5cd15cdfcc937"
+  integrity sha512-xLNpjiNgLZoXqwmLQ+czP3UQzeRgsutpG1KGfVUaj/3giqEElpn0wYkwhkJt4Glm9xf3jgzAdbFEDYM7u+Llxg==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -390,7 +390,7 @@ aws-sdk@^*, aws-sdk@^2.369.0:
     querystring "0.2.0"
     sax "1.2.1"
     url "0.10.3"
-    uuid "3.1.0"
+    uuid "3.3.2"
     xml2js "0.4.19"
 
 babel-code-frame@^6.22.0:
@@ -3039,10 +3039,10 @@ util@^0.11.0:
   dependencies:
     inherits "2.0.3"
 
-uuid@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
-  integrity sha512-DIWtzUkw04M4k3bf1IcpS2tngXEL26YUD2M0tMDUpnUrz2hgzUBlD55a4FjdLGPvfHxS6uluGWvaVEqgBcVa+g==
+uuid@3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
+  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 v8flags@^3.0.0:
   version "3.1.1"
