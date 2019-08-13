@@ -8,7 +8,7 @@
     "test": "echo NO TESTS"
   },
   "dependencies": {
-    "aws-sdk": "^2.497.0"
+    "aws-sdk": "^2.509.0"
   },
   "devDependencies": {
     "@oclif/tslint": "^3.1.1",
