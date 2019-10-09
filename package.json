@@ -19,7 +19,7 @@
     "source-map-support": "^0.5.13",
     "ts-loader": "^6.2.0",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.3",
+    "typescript": "^3.6.4",
     "webpack": "^4.41.0"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
